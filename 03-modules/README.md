@@ -6,7 +6,7 @@ Modules are the **tools that do the actual work** in Ansible. Here we learn what
 
 | Part | Topic |
 |---|---|
-| **Part 1: Concepts** | what a module is · idempotency · the JSON result · how a module runs · module types · module names (FQCN) · ad-hoc commands · finding modules |
+| **Part 1: Concepts** | what a module is · idempotency · the JSON result · how a module runs · module types · module names (FQCN) · ad-hoc commands · finding modules · **module vs ad-hoc vs playbook** |
 | **Part 2: Lab** | create, check and delete a user with the `user` module (ad-hoc and playbook) |
 
 [← 2. Inventory](../02-inventory/README.md) · [All topics](../README.md) · Next: [4. YAML & Playbooks →](../04-yaml-and-playbooks/README.md)
@@ -22,6 +22,7 @@ Modules are the **tools that do the actual work** in Ansible. Here we learn what
 6. [Module names (FQCN)](#6-module-names-fqcn)
 7. [Ad-hoc commands](#7-ad-hoc-commands)
 8. [Finding modules: ansible-doc](#8-finding-modules-ansible-doc)
+9. [Module vs ad-hoc command vs playbook](#9-module-vs-ad-hoc-command-vs-playbook)
 
 **Part 2: Lab**
 - [Step 1: Create a user (ad-hoc)](#step-1-create-a-user-ad-hoc)
@@ -178,6 +179,76 @@ ansible  <hosts>  -i <inventory>  -m <module>  -a "<arguments>"  [-b]
 | `ansible-doc -l` | list of all installed modules |
 | `ansible-doc user` | full docs for the `user` module |
 | `ansible-doc -s user` | short version: just the options |
+
+## 9. Module vs ad-hoc command vs playbook
+
+**Definition:**
+- **Module** = the **tool**: a small program that does one job on a server (`package`, `service`, `user`).
+- **Ad-hoc command** = using **one module, once**, typed straight into the terminal (`ansible ... -m <module>`).
+- **Playbook** = a **saved YAML file** that uses **many modules**, as ordered tasks, and can be run again any time.
+
+![Module is the tool; an ad-hoc command uses one module once; a playbook uses many modules and is saved](../images/13-module-adhoc-playbook.svg)
+
+> In one line: **modules do the work; ad-hoc and playbooks are two ways to run them.**
+
+| | **Module** | **Ad-hoc command** | **Playbook** |
+|---|---|---|---|
+| What it is | the tool (a program) | a one-line command | a YAML file |
+| How you run it | you don't run it alone; ad-hoc or a playbook runs it | `ansible <hosts> -m <module> -a "..."` | `ansible-playbook file.yaml` |
+| How many tasks | one job | **one** module, one task | **many** tasks, in order |
+| Saved / in Git | comes with Ansible | ❌ not saved (only shell history) | ✅ saved, reviewed, versioned |
+| Variables, handlers, loops, conditions | — | ❌ (only `-e`) | ✅ all of them |
+| Idempotent | ✅ (most modules) | ✅ if the module is | ✅ if the modules are |
+| Best for | — | quick checks, one-time fixes | real setups, deployments, anything repeated |
+| Linux comparison | a command (`dnf`, `useradd`) | typing one command | a shell script |
+
+**Same job, 3 views: install nginx**
+
+The **module** (the tool and its options):
+
+```yaml
+ansible.builtin.package:
+  name: nginx
+  state: present
+```
+
+As an **ad-hoc command** (run it once, now):
+
+```bash
+ansible webservers -b -m package -a "name=nginx state=present"
+```
+
+As a **playbook** (saved, with more steps):
+
+```yaml
+- name: Setup nginx
+  hosts: webservers
+  become: true
+  tasks:
+  - name: Install nginx
+    ansible.builtin.package:
+      name: nginx
+      state: present
+
+  - name: Start and enable nginx
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: true
+```
+
+**Which one should I use?**
+
+| Situation | Use |
+|---|---|
+| "Are all my servers reachable?" | ad-hoc: `ansible all -m ping` |
+| "How much disk is free on the web servers?" | ad-hoc: `ansible web -a "df -h"` |
+| "Restart nginx on all web servers right now" | ad-hoc: `ansible web -b -m service -a "name=nginx state=restarted"` |
+| "Set up a new web server: install, configure, start" | playbook |
+| "Deploy the new app version every week" | playbook (in Git, run by CI/CD) |
+| "Something I'll do more than once" | playbook |
+
+> **Rule of thumb:** if you'll do it **again**, or it needs **more than one step**, write a **playbook**.
 
 ---
 

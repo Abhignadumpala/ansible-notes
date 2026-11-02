@@ -98,6 +98,8 @@ skills:                        # a map inside a map
 | quick checks | real setups: install, configure, deploy |
 | not kept | kept in Git, shared, reviewed |
 
+> Full comparison with diagram: [Module vs ad-hoc command vs playbook](../03-modules/README.md#9-module-vs-ad-hoc-command-vs-playbook).
+
 ## 4. Playbook structure
 
 **Definition:** a playbook has **plays**, a play has **tasks**, and each task runs **one module**.

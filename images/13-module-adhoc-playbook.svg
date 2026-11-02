@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="460" viewBox="0 0 960 460" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c4043"/></marker>
+  </defs>
+  <rect width="960" height="460" rx="12" fill="#ffffff"/>
+  <text x="480" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#202124">Module vs ad-hoc command vs playbook</text>
+
+  <!-- module -->
+  <rect x="350" y="60" width="260" height="120" rx="10" fill="#f3e8fd" stroke="#9334e6" stroke-width="2"/>
+  <text x="480" y="88" text-anchor="middle" font-size="17" font-weight="700" fill="#681da8">Module = the tool</text>
+  <text x="480" y="110" text-anchor="middle" font-size="13" fill="#202124">does one job on a server</text>
+  <g font-family="Consolas, Menlo, monospace" font-size="13" fill="#681da8" font-weight="700" text-anchor="middle">
+    <text x="480" y="138">package · service · user</text>
+    <text x="480" y="158">copy · file · ping</text>
+  </g>
+
+  <line x1="410" y1="182" x2="250" y2="232" stroke="#3c4043" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="550" y1="182" x2="710" y2="232" stroke="#3c4043" stroke-width="2" marker-end="url(#a)"/>
+  <text x="318" y="200" text-anchor="end" font-size="13" fill="#3c4043">use ONE module, once</text>
+  <text x="642" y="200" font-size="13" fill="#3c4043">use MANY modules, saved</text>
+
+  <!-- adhoc -->
+  <rect x="30" y="236" width="420" height="200" rx="10" fill="#fef7e0" stroke="#f9ab00" stroke-width="2"/>
+  <text x="46" y="264" font-size="17" font-weight="700" fill="#b06000">Ad-hoc command = quick one-liner</text>
+  <rect x="46" y="278" width="388" height="34" rx="6" fill="#ffffff" stroke="#f9ab00"/>
+  <text x="56" y="300" font-family="Consolas, Menlo, monospace" font-size="12" fill="#202124">ansible web -b -m package -a "name=nginx"</text>
+  <g font-size="14" fill="#202124">
+    <text x="46" y="338">✔ typed in the terminal, runs right away</text>
+    <text x="46" y="362">✔ quick checks and one-time fixes</text>
+    <text x="46" y="386">✘ not saved, one task only</text>
+    <text x="46" y="410">✘ no handlers, no step-by-step order</text>
+  </g>
+
+  <!-- playbook -->
+  <rect x="510" y="236" width="420" height="200" rx="10" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+  <text x="526" y="264" font-size="17" font-weight="700" fill="#174ea6">Playbook = saved recipe (YAML file)</text>
+  <rect x="526" y="278" width="388" height="34" rx="6" fill="#ffffff" stroke="#8ab4f8"/>
+  <text x="536" y="300" font-family="Consolas, Menlo, monospace" font-size="12" fill="#202124">ansible-playbook nginx.yaml</text>
+  <g font-size="14" fill="#202124">
+    <text x="526" y="338">✔ many tasks, in order, kept in Git</text>
+    <text x="526" y="362">✔ variables, handlers, conditions, loops</text>
+    <text x="526" y="386">✔ repeatable: same result every run</text>
+    <text x="526" y="410">✘ takes a few minutes to write</text>
+  </g>
+</svg>

@@ -159,6 +159,10 @@ ansible group1 -m shell -a "df -h"
 ansible web -b -m service -a "name=nginx state=restarted"
 ```
 
+**20b. Module vs ad-hoc command vs playbook?**
+
+A **module** is the tool that does one job (`package`, `user`). An **ad-hoc command** runs one module once from the terminal, for quick checks and fixes. A **playbook** is a saved YAML file of many tasks (each running a module) with variables, handlers and order; it's repeatable and kept in Git. Rule: doing it again or in several steps → playbook.
+
 **21. What is FQCN?**
 
 Fully Qualified Collection Name, e.g. `ansible.builtin.copy` instead of `copy`. It names the collection and avoids clashes.
