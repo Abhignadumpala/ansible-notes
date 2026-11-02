@@ -159,25 +159,25 @@ ansible group1 -m shell -a "df -h"
 ansible web -b -m service -a "name=nginx state=restarted"
 ```
 
-**20b. Module vs ad-hoc command vs playbook?**
+**21. Module vs ad-hoc command vs playbook?**
 
 A **module** is the tool that does one job (`package`, `user`). An **ad-hoc command** runs one module once from the terminal, for quick checks and fixes. A **playbook** is a saved YAML file of many tasks (each running a module) with variables, handlers and order; it's repeatable and kept in Git. Rule: doing it again or in several steps → playbook.
 
-**21. What is FQCN?**
+**22. What is FQCN?**
 
 Fully Qualified Collection Name, e.g. `ansible.builtin.copy` instead of `copy`. It names the collection and avoids clashes.
 
-**22. How do you see a module's options?**
+**23. How do you see a module's options?**
 
 `ansible-doc <module>` (full) or `ansible-doc -s <module>` (short).
 
 ## 4. Playbooks
 
-**23. What is the structure of a playbook?**
+**24. What is the structure of a playbook?**
 
 A list of plays. Each play has `name`, `hosts`, optional `become` / `vars`, and `tasks`. Each task has a `name` and runs one module.
 
-**24. How do you write a basic playbook to install a package on a group of servers?**
+**25. How do you write a basic playbook to install a package on a group of servers?**
 
 ```yaml
 - name: Install a package
@@ -190,7 +190,7 @@ A list of plays. Each play has `name`, `hosts`, optional `become` / `vars`, and 
       state: present          # 'latest' = always upgrade to the newest
 ```
 
-**25. Install nginx with a playbook (Ubuntu).**
+**26. Install nginx with a playbook (Ubuntu).**
 
 ```yaml
 - name: Install nginx
@@ -215,15 +215,15 @@ A list of plays. Each play has `name`, `hosts`, optional `become` / `vars`, and 
 
 Use `dnf` (or `package`) on Amazon Linux / RHEL.
 
-**26. What does `become: yes` do?**
+**27. What does `become: yes` do?**
 
 Runs tasks as root (sudo). Needed for packages, services and users. `-K` asks for the sudo password if one is required.
 
-**27. What is a handler, and what problem does it solve?**
+**28. What is a handler, and what problem does it solve?**
 
 A task that runs only when another task **notifies** it and **changed** something, once, at the end of the play. It avoids needless restarts: nginx is restarted only when its config actually changed.
 
-**28. How do you check the status of a service on many servers?**
+**29. How do you check the status of a service on many servers?**
 
 ```yaml
 - name: Check service status
@@ -239,52 +239,52 @@ A task that runs only when another task **notifies** it and **changed** somethin
 
 `service_facts` takes no options; it collects **all** services into `ansible_facts.services`. Quick version: `ansible web -a "systemctl is-active nginx"`.
 
-**29. How do you test a playbook without changing servers?**
+**30. How do you test a playbook without changing servers?**
 
 `--syntax-check` validates the YAML; `--check` is a dry run that shows what would change; add `--diff` to see file changes.
 
-**30. Why can a playbook have many plays?**
+**31. Why can a playbook have many plays?**
 
 Each play can target different hosts, so one run can set up the database, then the backend, then the frontend in order (orchestration).
 
 ## 5. Variables and facts
 
-**31. `http_port` is in `group_vars/all`, `group_vars/webservers` and `--extra-vars`. Which wins? Name 5 places to define variables.**
+**32. `http_port` is in `group_vars/all`, `group_vars/webservers` and `--extra-vars`. Which wins? Name 5 places to define variables.**
 
 `--extra-vars` wins: it has the highest precedence. (Between the other two, `group_vars/webservers` beats `group_vars/all`, because the more specific group wins.)
 
 5 places: role `defaults`, inventory / `group_vars` / `host_vars`, play `vars`, `vars_files`, registered vars / `set_fact`, and `-e` on the command line.
 
-**32. What are `group_vars` and `host_vars`?**
+**33. What are `group_vars` and `host_vars`?**
 
 Folders next to the inventory/playbook. `group_vars/<group>.yaml` applies to every host in that group, `host_vars/<host>.yaml` to one host. Loaded automatically by name.
 
-**33. What are facts?**
+**34. What are facts?**
 
 System info Ansible gathers at the start of each play (OS, IP, memory), stored in `ansible_facts`. See them with `ansible <host> -m setup`; turn off with `gather_facts: false`.
 
-**34. What does `register` do? (sometimes called the "registry")**
+**35. What does `register` do? (sometimes called the "registry")**
 
 Saves a task's JSON result in a variable (`result.stdout`, `result.rc`) for later tasks. Ansible has no feature called "registry"; the term usually means `register`, `set_fact` or fact caching.
 
-**35. Dot notation vs bracket notation?**
+**36. Dot notation vs bracket notation?**
 
 | | Example | Use when |
 |---|---|---|
 | Dot | `{{ user.name }}` | simple key names; easy to read |
 | Bracket | `{{ user['first name'] }}`, `{{ user[key] }}` | keys with spaces, dashes or special characters, or a key stored in another variable |
 
-**36. Why does `-e "name=My Shop"` give only `My`?**
+**37. Why does `-e "name=My Shop"` give only `My`?**
 
 `-e` splits on spaces. Use inner quotes: `-e "name='My Shop'"`.
 
-**37. What is `inventory_hostname`?**
+**38. What is `inventory_hostname`?**
 
 A magic variable: the current host's name as written in the inventory.
 
 ## 6. Roles
 
-**38. What is a role, and why use it?**
+**39. What is a role, and why use it?**
 
 A standard folder layout that packs everything for one job (e.g. "webserver") into a reusable unit.
 
@@ -295,7 +295,7 @@ A standard folder layout that packs everything for one job (e.g. "webserver") in
 | Scalability | big setups stay organised |
 | Collaboration | share in a team or on Ansible Galaxy |
 
-**39. What is in a role directory?**
+**40. What is in a role directory?**
 
 | File | Purpose |
 |---|---|
@@ -309,13 +309,13 @@ A standard folder layout that packs everything for one job (e.g. "webserver") in
 
 Create one with `ansible-galaxy role init webserver`.
 
-**40. Designing a webserver role: what goes in `defaults` vs `vars`?**
+**41. Designing a webserver role: what goes in `defaults` vs `vars`?**
 
 `defaults/`: things users should change (port, document root, server name). `vars/`: internal values users shouldn't touch (package names, config paths). `tasks/` installs and configures; `handlers/` restarts on config change; `templates/` holds the config file.
 
 ## 7. Vault and secrets
 
-**41. How do you keep passwords and API keys out of plain text?**
+**42. How do you keep passwords and API keys out of plain text?**
 
 Use **Ansible Vault**:
 
@@ -325,7 +325,7 @@ Use **Ansible Vault**:
 4. Run with `--ask-vault-pass` or `--vault-password-file ~/.vault_pass`.
 5. For many environments, use **vault IDs** (`--vault-id prod@prompt`) with different passwords for staging and prod.
 
-**42. How do you encrypt one value instead of a whole file?**
+**43. How do you encrypt one value instead of a whole file?**
 
 ```bash
 ansible-vault encrypt_string 'mypassword' --name 'db_password'
@@ -333,7 +333,7 @@ ansible-vault encrypt_string 'mypassword' --name 'db_password'
 
 It prints an encrypted block you paste into any vars file.
 
-**43. How do you set a user's password with the `user` module?**
+**44. How do you set a user's password with the `user` module?**
 
 The `user` module needs a **hashed** password, not plain text. Make one with the `password_hash` filter:
 
@@ -348,7 +348,7 @@ Keep `user_password` itself in a vault file.
 
 ## 8. Advanced features
 
-**44. How do you use a jump host (bastion) to reach private servers?**
+**45. How do you use a jump host (bastion) to reach private servers?**
 
 Tell SSH to hop through the bastion. In the inventory:
 
@@ -363,7 +363,7 @@ ansible_ssh_common_args='-o ProxyJump=ec2-user@bastion.example.com'
 
 Or put `ProxyJump` in `~/.ssh/config` for those hosts. Ansible then connects control node → bastion → private server.
 
-**45. How do you delegate a task to another host?**
+**46. How do you delegate a task to another host?**
 
 `delegate_to:` runs one task on a different host than the play targets; `run_once: true` runs it only once.
 
@@ -376,7 +376,7 @@ Or put `ProxyJump` in `~/.ssh/config` for those hosts. Ansible then connects con
 
 Typical uses: load balancer changes, DNS updates, notifications.
 
-**46. How do you loop over all hosts in a group?**
+**47. How do you loop over all hosts in a group?**
 
 ```yaml
 - name: Ping each host in webservers
@@ -391,7 +391,7 @@ Typical uses: load balancer changes, DNS updates, notifications.
 
 `groups['webservers']` is the list of hosts in that group.
 
-**47. Install packages on Debian and disable a service on RedHat, using loops and conditions.**
+**48. Install packages on Debian and disable a service on RedHat, using loops and conditions.**
 
 ```yaml
 - name: OS-aware setup
@@ -415,7 +415,7 @@ Typical uses: load balancer changes, DNS updates, notifications.
 
 `when:` uses facts, so there are no hardcoded hostnames. (`apt` also accepts a list directly: `name: [vim, git, htop]`, which is faster than a loop.)
 
-**48. What are callback plugins?**
+**49. What are callback plugins?**
 
 Plugins that hook into a run to change the **output** or **send results somewhere**: JSON or YAML output, timing per task, logging, Slack/email notifications. Configure in `ansible.cfg`:
 
@@ -429,7 +429,7 @@ callbacks_enabled = ansible.posix.profile_tasks, ansible.posix.timer
 
 ## 9. Debugging and performance
 
-**49. A task is failing. How do you debug it?**
+**50. A task is failing. How do you debug it?**
 
 1. `-vvv` for detail (`-vvvv` shows SSH).
 2. `--limit <host>` and `--start-at-task "<name>"` to repeat just that part.
@@ -437,7 +437,7 @@ callbacks_enabled = ansible.posix.profile_tasks, ansible.posix.timer
 4. `--check --diff` to preview, `--step` to go one task at a time.
 5. `ansible <host> -m ping` / `-m setup` to check login and facts.
 
-**50. A playbook is slow on 500 hosts. What do you tune first?**
+**51. A playbook is slow on 500 hosts. What do you tune first?**
 
 | Tune | How |
 |---|---|
@@ -449,7 +449,7 @@ Also: `async` for long tasks, `strategy: free` so fast hosts don't wait for slow
 
 ## 10. Enterprise and CI/CD
 
-**51. What are Ansible Tower, AWX and Ansible Automation Platform?**
+**52. What are Ansible Tower, AWX and Ansible Automation Platform?**
 
 A **web UI + API** on top of Ansible for teams. Tower was renamed into **Red Hat Ansible Automation Platform (AAP)**; **AWX** is its free open-source upstream.
 
@@ -470,43 +470,43 @@ A **web UI + API** on top of Ansible for teams. Tower was renamed into **Red Hat
 | Support | community | Red Hat support + SLAs |
 | Use | labs, testing | production |
 
-**52. How is Ansible used in a CI/CD pipeline?**
+**53. How is Ansible used in a CI/CD pipeline?**
 
 The pipeline (Jenkins, GitHub Actions, GitLab CI) runs `ansible-playbook` after build and tests: provision or configure the servers, deploy the new version, restart services. The same playbooks run in every environment, so dev, test and prod stay consistent.
 
 ## 11. Error handling
 
-**53. What happens by default when a task fails?**
+**54. What happens by default when a task fails?**
 
 That host stops (its remaining tasks are skipped); other hosts continue. The recap shows `failed=1` for it.
 
-**54. `ignore_errors` vs `failed_when`?**
+**55. `ignore_errors` vs `failed_when`?**
 
 `ignore_errors: true` keeps going after **any** failure (the task shows as "ignored"). `failed_when` **defines** what failure is, e.g. `failed_when: "'ERROR' in result.stdout"` or `result.rc not in [0, 1]`, so real failures are still caught. Prefer `failed_when` with a clear rule.
 
-**55. Explain `block`, `rescue` and `always`.**
+**56. Explain `block`, `rescue` and `always`.**
 
 Try / catch / finally. `block` groups tasks; `rescue` runs only if a block task failed (roll back, alert); `always` runs every time (cleanup). If rescue succeeds, the error is handled: the recap shows `rescued=1` and the play continues. `ansible_failed_task.name` tells you which task failed.
 
-**56. How do you retry a task until something is ready?**
+**57. How do you retry a task until something is ready?**
 
 `until:` + `retries:` + `delay:`, e.g. call `/health` with `uri` until `status == 200`, 10 retries, 5 seconds apart. For ports, `wait_for` is simpler.
 
-**57. How do you stop the play on all hosts when one fails?**
+**58. How do you stop the play on all hosts when one fails?**
 
 `any_errors_fatal: true` on the play. For rollouts, `max_fail_percentage` stops only when too many hosts fail.
 
-**58. Can a handler be used to recover from a failed task?**
+**59. Can a handler be used to recover from a failed task?**
 
 No. Handlers run only when a task **changed**; a failed task never notifies, even with `ignore_errors`. Use `block` + `rescue` for recovery. `--force-handlers` only makes already-notified handlers run when a later task fails.
 
-**59. What is `changed_when: false` used for?**
+**60. What is `changed_when: false` used for?**
 
 Read-only `command`/`shell` tasks (`cat`, `grep`, `df`), which otherwise always report `changed`. It keeps the output honest and idempotent.
 
 ## 12. Scenario questions
 
-**60. Install different packages depending on the OS.**
+**61. Install different packages depending on the OS.**
 
 Use facts with `when:`, or one task with the generic `package` module and per-OS variables:
 
@@ -533,11 +533,11 @@ Use facts with `when:`, or one task with the generic `package` module and per-OS
       state: present
 ```
 
-**61. How would you build a LAMP stack and deploy a web page?**
+**62. How would you build a LAMP stack and deploy a web page?**
 
 One playbook (or one role per layer): install **Apache** and start it, install **MySQL/MariaDB** and create the database and user, install **PHP** and its modules, `copy` or `template` the web page to `/var/www/html`, open port 80, and enable all services on boot. Use a handler to restart Apache when its config changes.
 
-**62. Zero-downtime rolling update behind a load balancer: how?**
+**63. Zero-downtime rolling update behind a load balancer: how?**
 
 1. One orchestration playbook: database migrations → API tier → web tier.
 2. `serial: 1` (or `serial: 25%`) to update a few servers at a time.
