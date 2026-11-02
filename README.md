@@ -16,7 +16,7 @@ Simple, step-by-step Ansible notes for beginners. Every topic starts with a **de
 | 4 | [YAML & Playbooks](04-yaml-and-playbooks/README.md) | YAML rules, playbook structure, handlers, roles, best practices | install nginx with a playbook + handler |
 | 5 | [Variables](05-variables/README.md) | where to define variables, types, special variables, precedence | override variables from many places |
 
-**Interview questions:** [interview-questions.md](interview-questions.md)
+**Cheat sheet:** [all commands on one page](cheat-sheet.md) · **Interview questions:** [interview-questions.md](interview-questions.md)
 
 ## How to use these notes
 
