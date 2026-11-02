@@ -6,7 +6,7 @@ The inventory tells Ansible **which servers** to manage. Here we learn how to wr
 
 | Part | Topic |
 |---|---|
-| **Part 1: Concepts** | what an inventory is · key terms · INI format · groups of groups · host and group variables · YAML format · static vs dynamic · how to test |
+| **Part 1: Concepts** | what an inventory is · **types: static vs dynamic** · key terms · INI format · groups of groups · host and group variables · YAML format · how to test |
 | **Part 2: Lab** | build a YAML inventory · check it · print each host's variables with a playbook |
 
 [← 1. Introduction](../01-introduction/README.md) · [All topics](../README.md) · Next: [3. Modules →](../03-modules/README.md)
@@ -15,11 +15,11 @@ The inventory tells Ansible **which servers** to manage. Here we learn how to wr
 
 **Part 1: Concepts**
 1. [What is an inventory?](#1-what-is-an-inventory)
-2. [Key terms](#2-key-terms)
-3. [INI format](#3-ini-format)
-4. [Inventory variables](#4-inventory-variables)
-5. [YAML format](#5-yaml-format)
-6. [Static vs dynamic inventory](#6-static-vs-dynamic-inventory)
+2. [Types of inventory: static vs dynamic](#2-types-of-inventory-static-vs-dynamic)
+3. [Key terms](#3-key-terms)
+4. [INI format](#4-ini-format)
+5. [Inventory variables](#5-inventory-variables)
+6. [YAML format](#6-yaml-format)
 7. [How to test an inventory](#7-how-to-test-an-inventory)
 
 **Part 2: Lab**
@@ -48,135 +48,12 @@ The inventory tells Ansible **which servers** to manage. Here we learn how to wr
 | `inventory =` in `ansible.cfg` | `inventory = ./inventory.ini` |
 | default file | `/etc/ansible/hosts` |
 
-## 2. Key terms
+## 2. Types of inventory: static vs dynamic
 
-| Term | One-line definition |
-|---|---|
-| **Host** | one managed machine: a server, VM, cloud instance or network device |
-| **Group** | a name for a set of hosts, so one command can target all of them |
-| **Group of groups** | a group made of other groups (`[production:children]`) |
-| **Host variable** | a value for one host only (e.g. its SSH user) |
-| **Group variable** | a value for every host in a group |
-| **Static inventory** | a fixed list of hosts that you write by hand |
-| **Dynamic inventory** | the host list is fetched at run time from a source like the AWS API |
+**Definition:** Ansible has **2 types** of inventory, depending on whether the list of servers is **fixed** or **keeps changing**.
 
-## 3. INI format
-
-**Definition:** **INI format** = the simplest inventory style: `[group]` headings with one host per line.
-
-```ini
-[webservers]
-web1.example.com
-web2.example.com
-
-[databases]
-db1.example.com
-db2.example.com
-
-[production:children]
-webservers
-databases
-```
-
-| Part | Means |
-|---|---|
-| `[webservers]` | a group called `webservers` |
-| `web1.example.com` | a host (hostname or IP) |
-| `[production:children]` | a **group of groups**: production = webservers + databases |
-| `#` or `;` | a comment |
-
-**Built-in groups** (you don't write them, they always exist):
-
-| Group | Contains |
-|---|---|
-| `all` | every host in the inventory |
-| `ungrouped` | hosts written without any `[group]` above them |
-
-**Target what you need:**
-
-| Command | Runs on |
-|---|---|
-| `ansible webservers -m ping` | web1, web2 |
-| `ansible production -m ping` | all 4 hosts |
-| `ansible all -m ping` | every host |
-| `ansible web1.example.com -m ping` | just one host |
-
-## 4. Inventory variables
-
-**Definition:** **Inventory variables** = values written in the inventory, for one host (**host variables**) or a whole group (**group variables**). Playbooks can use them without changing any code.
-
-**Host variables:** on the same line as the host.
-
-```ini
-[webservers]
-web1 ansible_host=192.168.1.10 ansible_user=ubuntu   http_port=80
-web2 ansible_host=192.168.1.11 ansible_user=ec2-user http_port=8080 ansible_port=2222
-
-[databases]
-db1 ansible_host=192.168.1.20 ansible_user=admin ansible_ssh_private_key_file=/home/admin/.ssh/id_rsa
-```
-
-**Group variables:** under `[group:vars]`, applied to every host in the group.
-
-```ini
-[webservers:vars]
-app_env=production
-```
-
-**Connection variables** (built-in names that tell Ansible **how to log in**):
-
-| Variable | Means | Default |
-|---|---|---|
-| `ansible_host` | the real IP/hostname to connect to (when `web1` is just a short name) | the inventory name |
-| `ansible_user` | SSH username | your current user |
-| `ansible_port` | SSH port | 22 |
-| `ansible_ssh_private_key_file` | private key to log in with | `~/.ssh/id_rsa` etc. |
-| `ansible_password` | SSH password (avoid; prefer keys) | none |
-| `ansible_connection` | how to connect: `ssh` or `local` (run on this machine) | `ssh` |
-
-`http_port` and `app_env` are **your own** variables: any name you choose, used in playbooks as `{{ http_port }}`.
-
-## 5. YAML format
-
-**Definition:** the same inventory can be written in **YAML**. It's longer, but the structure is very clear.
-
-```yaml
-all:
-  children:
-    webservers:
-      hosts:
-        web1:
-          ansible_host: 192.168.1.10
-          http_port: 80
-        web2:
-          ansible_host: 192.168.1.11
-          http_port: 8080
-      vars:
-        app_env: production
-    databases:
-      hosts:
-        db1:
-          ansible_host: 192.168.1.20
-    production:
-      children:
-        webservers:
-        databases:
-```
-
-| Keyword | Means |
-|---|---|
-| `all:` | the top group: every host |
-| `children:` | the groups inside a group |
-| `hosts:` | the hosts in a group, each with its own variables |
-| `vars:` | group variables for every host in that group |
-
-| | INI | YAML |
-|---|---|---|
-| Looks like | `[group]` + lines | nested `key: value` |
-| Best for | small, simple inventories | big inventories with many variables |
-| File name | `inventory.ini` | `inventory.yaml` |
-
-## 6. Static vs dynamic inventory
+- **Static inventory** = a file where **you write the hosts by hand**. The IPs don't change, so the list stays the same until you edit it.
+- **Dynamic inventory** = the host list is **fetched automatically at run time** from a source like AWS. In production, servers come and go and IPs keep changing, so Ansible looks them up on every run.
 
 ![Static inventory lists fixed IPs; dynamic inventory asks AWS for the current servers](../images/06-static-vs-dynamic-inventory.svg)
 
@@ -225,6 +102,134 @@ ansible-inventory -i aws_ec2.yaml --graph
   "databases":  { "hosts": ["db1"] }
 }
 ```
+
+## 3. Key terms
+
+| Term | One-line definition |
+|---|---|
+| **Host** | one managed machine: a server, VM, cloud instance or network device |
+| **Group** | a name for a set of hosts, so one command can target all of them |
+| **Group of groups** | a group made of other groups (`[production:children]`) |
+| **Host variable** | a value for one host only (e.g. its SSH user) |
+| **Group variable** | a value for every host in a group |
+| **Static inventory** | a fixed list of hosts that you write by hand |
+| **Dynamic inventory** | the host list is fetched at run time from a source like the AWS API |
+
+## 4. INI format
+
+**Definition:** **INI format** = the simplest inventory style: `[group]` headings with one host per line.
+
+```ini
+[webservers]
+web1.example.com
+web2.example.com
+
+[databases]
+db1.example.com
+db2.example.com
+
+[production:children]
+webservers
+databases
+```
+
+| Part | Means |
+|---|---|
+| `[webservers]` | a group called `webservers` |
+| `web1.example.com` | a host (hostname or IP) |
+| `[production:children]` | a **group of groups**: production = webservers + databases |
+| `#` or `;` | a comment |
+
+**Built-in groups** (you don't write them, they always exist):
+
+| Group | Contains |
+|---|---|
+| `all` | every host in the inventory |
+| `ungrouped` | hosts written without any `[group]` above them |
+
+**Target what you need:**
+
+| Command | Runs on |
+|---|---|
+| `ansible webservers -m ping` | web1, web2 |
+| `ansible production -m ping` | all 4 hosts |
+| `ansible all -m ping` | every host |
+| `ansible web1.example.com -m ping` | just one host |
+
+## 5. Inventory variables
+
+**Definition:** **Inventory variables** = values written in the inventory, for one host (**host variables**) or a whole group (**group variables**). Playbooks can use them without changing any code.
+
+**Host variables:** on the same line as the host.
+
+```ini
+[webservers]
+web1 ansible_host=192.168.1.10 ansible_user=ubuntu   http_port=80
+web2 ansible_host=192.168.1.11 ansible_user=ec2-user http_port=8080 ansible_port=2222
+
+[databases]
+db1 ansible_host=192.168.1.20 ansible_user=admin ansible_ssh_private_key_file=/home/admin/.ssh/id_rsa
+```
+
+**Group variables:** under `[group:vars]`, applied to every host in the group.
+
+```ini
+[webservers:vars]
+app_env=production
+```
+
+**Connection variables** (built-in names that tell Ansible **how to log in**):
+
+| Variable | Means | Default |
+|---|---|---|
+| `ansible_host` | the real IP/hostname to connect to (when `web1` is just a short name) | the inventory name |
+| `ansible_user` | SSH username | your current user |
+| `ansible_port` | SSH port | 22 |
+| `ansible_ssh_private_key_file` | private key to log in with | `~/.ssh/id_rsa` etc. |
+| `ansible_password` | SSH password (avoid; prefer keys) | none |
+| `ansible_connection` | how to connect: `ssh` or `local` (run on this machine) | `ssh` |
+
+`http_port` and `app_env` are **your own** variables: any name you choose, used in playbooks as `{{ http_port }}`.
+
+## 6. YAML format
+
+**Definition:** the same inventory can be written in **YAML**. It's longer, but the structure is very clear.
+
+```yaml
+all:
+  children:
+    webservers:
+      hosts:
+        web1:
+          ansible_host: 192.168.1.10
+          http_port: 80
+        web2:
+          ansible_host: 192.168.1.11
+          http_port: 8080
+      vars:
+        app_env: production
+    databases:
+      hosts:
+        db1:
+          ansible_host: 192.168.1.20
+    production:
+      children:
+        webservers:
+        databases:
+```
+
+| Keyword | Means |
+|---|---|
+| `all:` | the top group: every host |
+| `children:` | the groups inside a group |
+| `hosts:` | the hosts in a group, each with its own variables |
+| `vars:` | group variables for every host in that group |
+
+| | INI | YAML |
+|---|---|---|
+| Looks like | `[group]` + lines | nested `key: value` |
+| Best for | small, simple inventories | big inventories with many variables |
+| File name | `inventory.ini` | `inventory.yaml` |
 
 ## 7. How to test an inventory
 
