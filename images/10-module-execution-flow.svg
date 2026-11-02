@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="400" viewBox="0 0 960 400" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c4043"/></marker>
+  </defs>
+  <rect width="960" height="400" rx="12" fill="#ffffff"/>
+  <text x="480" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#202124">How one module runs: 6 steps</text>
+
+  <rect x="30" y="60" width="420" height="250" rx="10" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+  <text x="240" y="86" text-anchor="middle" font-size="16" font-weight="700" fill="#174ea6">Control node</text>
+  <rect x="510" y="60" width="420" height="250" rx="10" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+  <text x="720" y="86" text-anchor="middle" font-size="16" font-weight="700" fill="#0d652d">Managed node</text>
+
+  <g font-size="14" fill="#202124">
+    <rect x="50" y="102" width="380" height="54" rx="8" fill="#ffffff" stroke="#8ab4f8"/>
+    <text x="64" y="125"><tspan font-weight="700" fill="#1a73e8">1 Input</tspan>  you write the task:</text>
+    <text x="64" y="145" font-family="Consolas, Menlo, monospace" font-size="13">user: name=devuser state=present</text>
+    <rect x="50" y="168" width="380" height="54" rx="8" fill="#ffffff" stroke="#8ab4f8"/>
+    <text x="64" y="191"><tspan font-weight="700" fill="#1a73e8">2 Package</tspan>  Ansible takes the module code</text>
+    <text x="64" y="211" font-size="13" fill="#3c4043">(Python for Linux, PowerShell for Windows)</text>
+    <rect x="50" y="234" width="380" height="54" rx="8" fill="#ffffff" stroke="#8ab4f8"/>
+    <text x="64" y="257"><tspan font-weight="700" fill="#1a73e8">6 Report</tspan>  shows ok / changed / failed</text>
+    <text x="64" y="277" font-size="13" fill="#3c4043">and uses the JSON result in the next tasks</text>
+
+    <rect x="530" y="102" width="380" height="54" rx="8" fill="#ffffff" stroke="#81c995"/>
+    <text x="544" y="125"><tspan font-weight="700" fill="#188038">3 Transfer</tspan>  copied over SSH to a temp</text>
+    <text x="544" y="145" font-size="13" fill="#3c4043">folder: ~/.ansible/tmp/</text>
+    <rect x="530" y="168" width="380" height="54" rx="8" fill="#ffffff" stroke="#81c995"/>
+    <text x="544" y="191"><tspan font-weight="700" fill="#188038">4 Execute</tspan>  runs locally with Python:</text>
+    <text x="544" y="211" font-size="13" fill="#3c4043">user exists? yes → do nothing · no → create</text>
+    <rect x="530" y="234" width="380" height="54" rx="8" fill="#ffffff" stroke="#81c995"/>
+    <text x="544" y="257"><tspan font-weight="700" fill="#188038">5 Output + cleanup</tspan>  prints JSON result,</text>
+    <text x="544" y="277" font-size="13" fill="#3c4043">then the temp file is deleted</text>
+  </g>
+  <g stroke="#3c4043" stroke-width="2" fill="none">
+    <line x1="432" y1="195" x2="526" y2="130" marker-end="url(#a)"/>
+    <line x1="720" y1="157" x2="720" y2="165" marker-end="url(#a)"/>
+    <line x1="720" y1="223" x2="720" y2="231" marker-end="url(#a)"/>
+    <line x1="526" y1="262" x2="434" y2="262" marker-end="url(#a)"/>
+  </g>
+  <text x="479" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#a50e0e">SSH</text>
+  <text x="479" y="254" text-anchor="middle" font-size="12" font-weight="700" fill="#3c4043">JSON</text>
+
+  <rect x="30" y="328" width="900" height="54" rx="10" fill="#f8f9fa" stroke="#dadce0"/>
+  <text x="480" y="351" text-anchor="middle" font-size="14" fill="#202124">Example JSON result:  <tspan font-family="Consolas, Menlo, monospace" font-size="13">{ "changed": true, "name": "devuser", "uid": 1001, "state": "present" }</tspan></text>
+  <text x="480" y="372" text-anchor="middle" font-size="13" fill="#3c4043">Nothing stays on the managed node → agentless</text>
+</svg>

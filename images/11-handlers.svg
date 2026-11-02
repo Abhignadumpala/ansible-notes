@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c4043"/></marker>
+  </defs>
+  <rect width="960" height="420" rx="12" fill="#ffffff"/>
+  <text x="480" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#202124">Handlers: run only when something changed</text>
+
+  <rect x="30" y="70" width="270" height="110" rx="10" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+  <text x="46" y="96" font-size="15" font-weight="700" fill="#174ea6">Task: copy nginx config</text>
+  <text x="46" y="122" font-family="Consolas, Menlo, monospace" font-size="14" fill="#202124">copy: ...</text>
+  <text x="46" y="146" font-family="Consolas, Menlo, monospace" font-size="14" font-weight="700" fill="#9334e6">notify: restart nginx</text>
+  <text x="46" y="168" font-size="12" fill="#3c4043">"call the handler IF I change"</text>
+
+  <line x1="302" y1="125" x2="366" y2="125" stroke="#3c4043" stroke-width="2" marker-end="url(#a)"/>
+
+  <path d="M445,72 L525,125 L445,178 L365,125 z" fill="#fef7e0" stroke="#f9ab00" stroke-width="2"/>
+  <text x="445" y="121" text-anchor="middle" font-size="14" font-weight="700" fill="#202124">file</text>
+  <text x="445" y="139" text-anchor="middle" font-size="14" font-weight="700" fill="#202124">changed?</text>
+
+  <line x1="527" y1="125" x2="616" y2="100" stroke="#b06000" stroke-width="2" marker-end="url(#a)"/>
+  <text x="560" y="98" font-size="13" font-weight="700" fill="#b06000">yes</text>
+  <rect x="620" y="62" width="310" height="76" rx="10" fill="#f3e8fd" stroke="#9334e6" stroke-width="2"/>
+  <text x="636" y="88" font-size="15" font-weight="700" fill="#681da8">Handler: restart nginx</text>
+  <text x="636" y="112" font-size="13" fill="#202124">runs <tspan font-weight="700">once</tspan>, at the <tspan font-weight="700">end of the play</tspan></text>
+  <text x="636" y="130" font-size="13" fill="#202124">(even if 3 tasks notified it)</text>
+
+  <line x1="445" y1="180" x2="445" y2="214" stroke="#188038" stroke-width="2" marker-end="url(#a)"/>
+  <text x="455" y="202" font-size="13" font-weight="700" fill="#188038">no</text>
+  <rect x="330" y="218" width="230" height="50" rx="10" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+  <text x="445" y="249" text-anchor="middle" font-size="14" font-weight="700" fill="#0d652d">handler skipped (ok)</text>
+
+  <rect x="30" y="292" width="900" height="110" rx="10" fill="#f8f9fa" stroke="#dadce0"/>
+  <text x="50" y="318" font-size="15" font-weight="700" fill="#202124">Why use a handler instead of a normal "restart" task?</text>
+  <g font-size="14" fill="#202124">
+    <text x="50" y="344">A normal task restarts nginx <tspan font-weight="700">every run</tspan> → short downtime every time, even when nothing changed.</text>
+    <text x="50" y="368">A handler restarts it <tspan font-weight="700">only when the config really changed</tspan>, and only once.</text>
+    <text x="50" y="392" fill="#3c4043">The name after <tspan font-family="Consolas, Menlo, monospace">notify:</tspan> must match the handler's <tspan font-family="Consolas, Menlo, monospace">name:</tspan> exactly.</text>
+  </g>
+</svg>
