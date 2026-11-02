@@ -9,7 +9,7 @@ Variables make one playbook work for many servers and environments. Here we lear
 | **Part 1: Concepts** | what a variable is · naming rules · where to define variables · types · special variables · facts · `register` · precedence |
 | **Part 2: Lab** | define variables in the inventory, `group_vars`, `host_vars`, a vars file and `-e`, then see which wins |
 
-[← 4. YAML & Playbooks](../04-yaml-and-playbooks/README.md) · [All topics](../README.md)
+[← 4. YAML & Playbooks](../04-yaml-and-playbooks/README.md) · [All topics](../README.md) · Next: [6. Error Handling →](../06-error-handling/README.md)
 
 ## Table of Contents
 
@@ -423,4 +423,4 @@ ansible-playbook -i inventory.ini site.yaml -e "app_name='My Shop App'"
 - Special: magic (`inventory_hostname`, `groups`, `hostvars`), connection (`ansible_user`...), **facts** (`ansible_facts[...]`).
 - **Precedence:** `-e` wins → set_fact → task → block → role vars → vars_files → prompt → play → facts → host vars → group vars → role defaults. More specific wins.
 
-[← 4. YAML & Playbooks](../04-yaml-and-playbooks/README.md) · [All topics](../README.md)
+[← 4. YAML & Playbooks](../04-yaml-and-playbooks/README.md) · [All topics](../README.md) · Next: [6. Error Handling →](../06-error-handling/README.md)

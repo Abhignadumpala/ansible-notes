@@ -19,7 +19,8 @@ Short, clear answers, grouped by topic, from basic to advanced. Scenario questio
 | 8 | [Advanced features](#8-advanced-features) |
 | 9 | [Debugging and performance](#9-debugging-and-performance) |
 | 10 | [Enterprise and CI/CD](#10-enterprise-and-cicd) |
-| 11 | [Scenario questions](#11-scenario-questions) |
+| 11 | [Error handling](#11-error-handling) |
+| 12 | [Scenario questions](#12-scenario-questions) |
 
 ---
 
@@ -469,9 +470,39 @@ A **web UI + API** on top of Ansible for teams. Tower was renamed into **Red Hat
 
 The pipeline (Jenkins, GitHub Actions, GitLab CI) runs `ansible-playbook` after build and tests: provision or configure the servers, deploy the new version, restart services. The same playbooks run in every environment, so dev, test and prod stay consistent.
 
-## 11. Scenario questions
+## 11. Error handling
 
-**53. Install different packages depending on the OS.**
+**53. What happens by default when a task fails?**
+
+That host stops (its remaining tasks are skipped); other hosts continue. The recap shows `failed=1` for it.
+
+**54. `ignore_errors` vs `failed_when`?**
+
+`ignore_errors: true` keeps going after **any** failure (the task shows as "ignored"). `failed_when` **defines** what failure is, e.g. `failed_when: "'ERROR' in result.stdout"` or `result.rc not in [0, 1]`, so real failures are still caught. Prefer `failed_when` with a clear rule.
+
+**55. Explain `block`, `rescue` and `always`.**
+
+Try / catch / finally. `block` groups tasks; `rescue` runs only if a block task failed (roll back, alert); `always` runs every time (cleanup). If rescue succeeds, the error is handled: the recap shows `rescued=1` and the play continues. `ansible_failed_task.name` tells you which task failed.
+
+**56. How do you retry a task until something is ready?**
+
+`until:` + `retries:` + `delay:`, e.g. call `/health` with `uri` until `status == 200`, 10 retries, 5 seconds apart. For ports, `wait_for` is simpler.
+
+**57. How do you stop the play on all hosts when one fails?**
+
+`any_errors_fatal: true` on the play. For rollouts, `max_fail_percentage` stops only when too many hosts fail.
+
+**58. Can a handler be used to recover from a failed task?**
+
+No. Handlers run only when a task **changed**; a failed task never notifies, even with `ignore_errors`. Use `block` + `rescue` for recovery. `--force-handlers` only makes already-notified handlers run when a later task fails.
+
+**59. What is `changed_when: false` used for?**
+
+Read-only `command`/`shell` tasks (`cat`, `grep`, `df`), which otherwise always report `changed`. It keeps the output honest and idempotent.
+
+## 12. Scenario questions
+
+**60. Install different packages depending on the OS.**
 
 Use facts with `when:`, or one task with the generic `package` module and per-OS variables:
 
@@ -498,11 +529,11 @@ Use facts with `when:`, or one task with the generic `package` module and per-OS
       state: present
 ```
 
-**54. How would you build a LAMP stack and deploy a web page?**
+**61. How would you build a LAMP stack and deploy a web page?**
 
 One playbook (or one role per layer): install **Apache** and start it, install **MySQL/MariaDB** and create the database and user, install **PHP** and its modules, `copy` or `template` the web page to `/var/www/html`, open port 80, and enable all services on boot. Use a handler to restart Apache when its config changes.
 
-**55. Zero-downtime rolling update behind a load balancer: how?**
+**62. Zero-downtime rolling update behind a load balancer: how?**
 
 1. One orchestration playbook: database migrations → API tier → web tier.
 2. `serial: 1` (or `serial: 25%`) to update a few servers at a time.

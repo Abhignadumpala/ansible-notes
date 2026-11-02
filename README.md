@@ -15,6 +15,7 @@ Simple, step-by-step Ansible notes for beginners. Every topic starts with a **de
 | 3 | [Modules](03-modules/README.md) | what a module is, idempotency, how a module runs, module types | create and delete a user with the `user` module |
 | 4 | [YAML & Playbooks](04-yaml-and-playbooks/README.md) | YAML rules, playbook structure, handlers, roles, best practices | install nginx with a playbook + handler |
 | 5 | [Variables](05-variables/README.md) | where to define variables, types, special variables, precedence | override variables from many places |
+| 6 | [Error Handling](06-error-handling/README.md) | `ignore_errors`, `failed_when`, `block` / `rescue` / `always`, retries, stopping a play | ignore, catch, roll back and retry failures |
 
 **Cheat sheet:** [all commands on one page](cheat-sheet.md) · **Interview questions:** [interview-questions.md](interview-questions.md)
 

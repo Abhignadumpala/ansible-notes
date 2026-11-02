@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="470" viewBox="0 0 960 470" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3c4043"/></marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d93025"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#188038"/></marker>
+  </defs>
+  <rect width="960" height="470" rx="12" fill="#ffffff"/>
+  <text x="480" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#202124">block / rescue / always: try, catch, finally</text>
+
+  <!-- block -->
+  <rect x="30" y="64" width="300" height="200" rx="10" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+  <text x="46" y="90" font-size="16" font-weight="700" fill="#174ea6">block:  (try)</text>
+  <text x="46" y="110" font-size="12" fill="#3c4043">the normal steps, run top to bottom</text>
+  <g font-size="14" fill="#202124">
+    <rect x="46" y="124" width="268" height="36" rx="6" fill="#ffffff" stroke="#8ab4f8"/><text x="58" y="147">task 1  ✔</text>
+    <rect x="46" y="168" width="268" height="36" rx="6" fill="#fce8e6" stroke="#d93025"/><text x="58" y="191">task 2  ✘ fails</text>
+    <rect x="46" y="212" width="268" height="36" rx="6" fill="#f1f3f4" stroke="#dadce0" stroke-dasharray="5 4"/><text x="58" y="235" fill="#80868b">task 3  (skipped)</text>
+  </g>
+
+  <!-- rescue -->
+  <rect x="400" y="64" width="250" height="110" rx="10" fill="#fce8e6" stroke="#d93025" stroke-width="2"/>
+  <text x="416" y="90" font-size="16" font-weight="700" fill="#a50e0e">rescue:  (catch)</text>
+  <text x="416" y="116" font-size="13" fill="#202124">runs <tspan font-weight="700">only if</tspan> a block task failed</text>
+  <text x="416" y="138" font-size="13" fill="#202124">e.g. roll back, alert the team</text>
+  <text x="416" y="160" font-size="12" fill="#3c4043">error is "handled" → play continues</text>
+
+  <!-- always -->
+  <rect x="400" y="214" width="250" height="90" rx="10" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+  <text x="416" y="240" font-size="16" font-weight="700" fill="#0d652d">always:  (finally)</text>
+  <text x="416" y="266" font-size="13" fill="#202124">runs <tspan font-weight="700">every time</tspan>, fail or not</text>
+  <text x="416" y="288" font-size="13" fill="#202124">e.g. clean up temp files, notify</text>
+
+  <!-- next -->
+  <rect x="720" y="214" width="210" height="90" rx="10" fill="#f8f9fa" stroke="#5f6368" stroke-width="2"/>
+  <text x="825" y="252" text-anchor="middle" font-size="15" font-weight="700" fill="#202124">next tasks</text>
+  <text x="825" y="276" text-anchor="middle" font-size="13" fill="#3c4043">the play goes on</text>
+
+  <!-- arrows -->
+  <path d="M316,186 C360,186 360,120 396,120" fill="none" stroke="#d93025" stroke-width="2.5" marker-end="url(#r)"/>
+  <text x="330" y="208" font-size="13" font-weight="700" fill="#d93025">fail</text>
+  <path d="M316,142 C350,142 352,256 396,256" fill="none" stroke="#188038" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#g)"/>
+  <text x="46" y="292" font-size="13" font-weight="700" fill="#188038">- - -  all OK → skip rescue, go to always</text>
+  <line x1="525" y1="176" x2="525" y2="210" stroke="#3c4043" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="652" y1="259" x2="716" y2="259" stroke="#3c4043" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- table -->
+  <rect x="30" y="328" width="900" height="124" rx="10" fill="#f8f9fa" stroke="#dadce0"/>
+  <g font-size="14" fill="#202124">
+    <text x="50" y="354" font-weight="700">What happens</text><text x="330" y="354" font-weight="700">rescue</text><text x="480" y="354" font-weight="700">always</text><text x="630" y="354" font-weight="700">Result</text>
+    <line x1="50" y1="362" x2="910" y2="362" stroke="#dadce0"/>
+    <text x="50" y="386">all block tasks OK</text><text x="330" y="386">skipped</text><text x="480" y="386">runs</text><text x="630" y="386" fill="#188038" font-weight="700">ok</text>
+    <text x="50" y="412">a block task fails, rescue OK</text><text x="330" y="412">runs</text><text x="480" y="412">runs</text><text x="630" y="412" fill="#b06000" font-weight="700">rescued=1, play continues</text>
+    <text x="50" y="438">a block task fails, rescue fails too</text><text x="330" y="438">runs, fails</text><text x="480" y="438">runs</text><text x="630" y="438" fill="#a50e0e" font-weight="700">failed, host stops</text>
+  </g>
+</svg>
