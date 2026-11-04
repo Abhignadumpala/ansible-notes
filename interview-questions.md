@@ -8,6 +8,7 @@ Short, clear answers, grouped by topic, from basic to advanced. Scenario questio
 
 | # | Section |
 |---|---|
+| 🎤 | [Tell me about Ansible (1-minute answer)](#-tell-me-about-ansible-1-minute-answer) |
 | ⭐ | [Very Important](#-very-important) |
 | 1 | [Basics and architecture](#1-basics-and-architecture) |
 | 2 | [Inventory](#2-inventory) |
@@ -21,6 +22,29 @@ Short, clear answers, grouped by topic, from basic to advanced. Scenario questio
 | 10 | [Enterprise and CI/CD](#10-enterprise-and-cicd) |
 | 11 | [Error handling](#11-error-handling) |
 | 12 | [Scenario questions](#12-scenario-questions) |
+
+---
+
+## 🎤 Tell me about Ansible (1-minute answer)
+
+Practise saying this out loud. It covers what Ansible is, the main pieces, idempotency and a real project.
+
+> "Ansible is an **agentless, push-based configuration management tool**. From a **control node** it connects to **managed nodes over SSH** and installs and configures software. **`ansible.cfg`** holds common settings, the **inventory** lists the servers (**static** for fixed IPs, **dynamic** using the `aws_ec2` plugin when instances scale in and out), and **playbooks** hold tasks that call **modules**.
+>
+> Modules are **idempotent**: running a playbook again changes nothing if the server is already in the desired state. Shell scripts aren't, so we write checks ourselves; with `command` or `shell` in Ansible we add `creates` or `when` checks. Ansible also has **error handling** with `block` / `rescue`, and **one command configures every server** instead of logging in to each.
+>
+> I used it for **RoboShop**, my **3-tier e-commerce microservices** project on AWS: an **Nginx frontend** in the web tier, **catalogue, user, cart, shipping and payment** services in the app tier, and **MongoDB, MySQL, Redis and RabbitMQ** as data stores. I first deployed it manually, then with shell scripts, then with **Ansible**: one playbook creates the **10 EC2 servers and their Route 53 records**, and one playbook per component installs and configures it, using **templates** for the systemd service files and the Nginx config."
+
+**Key words to hit:** agentless · push · SSH · control node / managed nodes · ansible.cfg · inventory (static / dynamic) · playbook · modules · idempotency · error handling · RoboShop.
+
+| RoboShop data store | Used by | Holds |
+|---|---|---|
+| **MongoDB** | catalogue, user | Products and users |
+| **MySQL** | shipping | Cities / shipping data |
+| **Redis** | cart, user | Cart items and user sessions |
+| **RabbitMQ** | payment | Orders waiting to be processed |
+
+> ➕ After learning **roles, handlers and Vault**, add to the RoboShop part: "…later I moved each component into a **role**, used **handlers** to restart services only when config changed, and kept passwords in **Ansible Vault**." Only say it once you've done it.
 
 ---
 
