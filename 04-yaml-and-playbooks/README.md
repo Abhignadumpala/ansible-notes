@@ -115,6 +115,44 @@ skills:                        # a map inside a map
 | **Handler** | a task that runs only when notified by a change |
 | **Role** | a reusable folder of tasks, handlers, variables and files |
 
+### Play vs task: reading `- name:`
+
+In YAML, `-` starts **a new item in a list**. `name:` is just a **label** (a description shown in the output). So `- name:` means "a new item, and here's its label". **Where** it sits decides whether that item is a **play** or a **task**:
+
+```yaml
+- name: create ec2 instances and r53 records   ← PLAY  (left edge, no indent)
+  hosts: local
+  connection: local
+  tasks:
+  - name: create ec2 instance                  ← TASK  (under tasks:)
+    amazon.aws.ec2_instance:
+      name: "roboshop-{{ item }}"              ← module option, NOT a task name
+  - name: create R53 record                    ← TASK  (under tasks:)
+    amazon.aws.route53:
+      zone: example.com
+```
+
+| Where `- name:` sits | It names a… |
+|---|---|
+| At the **left edge** of the file | **Play** (a playbook is a list of plays) |
+| Under **`tasks:`** | **Task** (a play has a list of tasks) |
+
+**Simple rule:** top level = play, under `tasks:` = task.
+
+The label shows up when the playbook runs:
+
+```
+PLAY [create ec2 instances and r53 records] *************
+TASK [create ec2 instance] ******************************
+TASK [create R53 record] ********************************
+```
+
+| Point | Detail |
+|---|---|
+| Is `name` required? | No, the task still runs without it. But always write one: the output and errors become easy to read |
+| Who does the work? | The **module** line (`amazon.aws.ec2_instance:`), not `name` |
+| Two different `name`s | `- name:` (with a dash, task level) = description. `name:` **under a module** (one level deeper) = a real option, here the EC2 instance's Name tag in AWS |
+
 ## 5. Playbook keywords
 
 ```yaml

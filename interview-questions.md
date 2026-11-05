@@ -201,6 +201,8 @@ Fully Qualified Collection Name, e.g. `ansible.builtin.copy` instead of `copy`. 
 
 A list of plays. Each play has `name`, `hosts`, optional `become` / `vars`, and `tasks`. Each task has a `name` and runs one module.
 
+How to tell them apart: `-` starts a list item and `name:` is only a label. A `- name:` at the **left edge** is a **play**, and a `- name:` under **`tasks:`** is a **task**.
+
 **25. How do you write a basic playbook to install a package on a group of servers?**
 
 ```yaml
