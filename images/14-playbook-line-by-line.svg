@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="810" viewBox="0 0 1120 810">
+<rect width="1120" height="810" fill="#ffffff"/>
+<text x="560" y="34" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="bold" fill="#111827">Reading a playbook: play, tasks and modules</text>
+<rect x="20" y="58" width="480" height="704" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<rect x="24" y="156" width="5" height="91" rx="2" fill="#1e3a8a"/>
+<rect x="24" y="271" width="5" height="91" rx="2" fill="#065f46"/>
+<rect x="24" y="386" width="5" height="114" rx="2" fill="#9d174d"/>
+<rect x="24" y="524" width="5" height="114" rx="2" fill="#9a3412"/>
+<rect x="24" y="662" width="5" height="91" rx="2" fill="#5b21b6"/>
+<rect x="24" y="64" width="5" height="91" rx="2" fill="#a16207"/>
+<text x="40" y="80" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">- name: configure mongodb server</text>
+<text x="520" y="80" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<rect x="545" y="65" width="52" height="20" rx="4" fill="#fde68a"/>
+<text x="571.0" y="80" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#a16207">PLAY</text>
+<text x="607" y="80" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#a16207">label of the play (shown as PLAY [...])</text>
+<text x="40" y="103" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  hosts: mongodb</text>
+<text x="520" y="103" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="103" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">run on the 'mongodb' group in the inventory</text>
+<text x="40" y="126" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  become: yes</text>
+<text x="520" y="126" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="126" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">run as root (sudo)</text>
+<text x="40" y="149" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  tasks:</text>
+<text x="520" y="149" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="149" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">list of tasks starts here (run top to bottom)</text>
+<text x="40" y="172" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  - name: copy mongo repo</text>
+<text x="520" y="172" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<rect x="545" y="157" width="70" height="20" rx="4" fill="#bfdbfe"/>
+<text x="580.0" y="172" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1e3a8a">TASK 1</text>
+<text x="625" y="172" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#1e3a8a">label of task 1</text>
+<text x="40" y="195" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">    copy:</text>
+<text x="520" y="195" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="195" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">module: copy a file to the server</text>
+<text x="40" y="218" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      src: mongo.repo</text>
+<text x="520" y="218" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="218" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">file on the control node</text>
+<text x="40" y="241" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      dest: /etc/yum.repos.d/mongo.repo</text>
+<text x="520" y="241" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="241" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">path on the server (dnf reads repos here)</text>
+<text x="40" y="287" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  - name: install mongodb server</text>
+<text x="520" y="287" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<rect x="545" y="272" width="70" height="20" rx="4" fill="#bbf7d0"/>
+<text x="580.0" y="287" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#065f46">TASK 2</text>
+<text x="625" y="287" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#065f46">label of task 2</text>
+<text x="40" y="310" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">    package:</text>
+<text x="520" y="310" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="310" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">module: install a package (dnf / yum / apt)</text>
+<text x="40" y="333" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      name: mongodb-org</text>
+<text x="520" y="333" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="333" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">package name (from the repo in task 1)</text>
+<text x="40" y="356" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      state: present</text>
+<text x="520" y="356" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="356" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">install if missing, else do nothing</text>
+<text x="40" y="402" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  - name: start and enable mongodb</text>
+<text x="520" y="402" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<rect x="545" y="387" width="70" height="20" rx="4" fill="#fbcfe8"/>
+<text x="580.0" y="402" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#9d174d">TASK 3</text>
+<text x="625" y="402" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#9d174d">label of task 3</text>
+<text x="40" y="425" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">    service:</text>
+<text x="520" y="425" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="425" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">module: manage a systemd service</text>
+<text x="40" y="448" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      name: mongod</text>
+<text x="520" y="448" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="448" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">service name</text>
+<text x="40" y="471" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      state: started</text>
+<text x="520" y="471" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="471" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">start it now</text>
+<text x="40" y="494" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      enabled: yes</text>
+<text x="520" y="494" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="494" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">start again after every reboot</text>
+<text x="40" y="540" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  - name: allow remote connections</text>
+<text x="520" y="540" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<rect x="545" y="525" width="70" height="20" rx="4" fill="#fed7aa"/>
+<text x="580.0" y="540" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#9a3412">TASK 4</text>
+<text x="625" y="540" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#9a3412">label of task 4</text>
+<text x="40" y="563" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">    replace:</text>
+<text x="520" y="563" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="563" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">module: find and replace text in a file</text>
+<text x="40" y="586" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      path: /etc/mongod.conf</text>
+<text x="520" y="586" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="586" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">MongoDB config file</text>
+<text x="40" y="609" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      regexp: '127.0.0.1'</text>
+<text x="520" y="609" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="609" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">find: listens only on localhost</text>
+<text x="40" y="632" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      replace: '0.0.0.0'</text>
+<text x="520" y="632" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="632" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">replace: listen on all IPs (remote access)</text>
+<text x="40" y="678" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">  - name: restart mongod</text>
+<text x="520" y="678" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<rect x="545" y="663" width="70" height="20" rx="4" fill="#ddd6fe"/>
+<text x="580.0" y="678" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#5b21b6">TASK 5</text>
+<text x="625" y="678" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#5b21b6">label of task 5</text>
+<text x="40" y="701" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">    service:</text>
+<text x="520" y="701" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="701" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">module: manage a systemd service</text>
+<text x="40" y="724" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      name: mongod</text>
+<text x="520" y="724" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="724" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">service name</text>
+<text x="40" y="747" font-family="DejaVu Sans Mono, Consolas, monospace" font-size="14" fill="#1f2328" xml:space="preserve">      state: restarted</text>
+<text x="520" y="747" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9ca3af">←</text>
+<text x="545" y="747" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#374151">restart so the new config is loaded</text>
+<text x="560" y="796" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#475569">- name at the left edge = PLAY  ·  - name under tasks: = TASK  ·  the line under a task name = the MODULE that does the work</text>
+</svg>

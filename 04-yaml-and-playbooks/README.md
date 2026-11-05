@@ -155,40 +155,44 @@ TASK [create R53 record] ********************************
 
 ### Example: a real playbook, line by line
 
-This playbook sets up a MongoDB server (RoboShop's database). Every line has a `#` comment saying what it does. Ansible ignores everything after `#`.
+This playbook sets up a MongoDB server (RoboShop's database):
 
 ```yaml
-- name: configure mongodb server        # PLAY: its label, shown as PLAY [...] in the output
-  hosts: mongodb                        # run on the hosts in the "mongodb" group of the inventory
-  become: yes                           # run tasks as root (sudo), needed to install and edit system files
-  tasks:                                # the list of steps, run top to bottom
-  - name: copy mongo repo               # TASK 1: its label
-    copy:                               # module: copy a file from the control node to the server
-      src: mongo.repo                   # file next to the playbook (on the control node)
-      dest: /etc/yum.repos.d/mongo.repo # where it goes on the server, so dnf knows where to download MongoDB
+- name: configure mongodb server
+  hosts: mongodb
+  become: yes
+  tasks:
+  - name: copy mongo repo
+    copy:
+      src: mongo.repo
+      dest: /etc/yum.repos.d/mongo.repo
 
-  - name: install mongodb server        # TASK 2
-    package:                            # module: install a package (uses dnf/yum/apt automatically)
-      name: mongodb-org                 # package name (from the repo added in task 1)
-      state: present                    # install it if missing; do nothing if already installed
+  - name: install mongodb server
+    package:
+      name: mongodb-org
+      state: present
 
-  - name: start and enable mongodb      # TASK 3
-    service:                            # module: manage a systemd service
-      name: mongod                      # the service name (package is mongodb-org, service is mongod)
-      state: started                    # start it now if it isn't running
-      enabled: yes                      # also start it automatically after every reboot
-
-  - name: allow remote connections      # TASK 4
-    replace:                            # module: find and replace text inside a file
-      path: /etc/mongod.conf            # MongoDB's config file
-      regexp: '127.0.0.1'               # find: listen only on localhost (no remote access)
-      replace: '0.0.0.0'                # replace with: listen on all IPs, so catalogue/user servers can connect
-
-  - name: restart mongod                # TASK 5
-    service:                            # same module as task 3
+  - name: start and enable mongodb
+    service:
       name: mongod
-      state: restarted                  # restart, so the new config (0.0.0.0) is loaded
+      state: started
+      enabled: yes
+
+  - name: allow remote connections
+    replace:
+      path: /etc/mongod.conf
+      regexp: '127.0.0.1'
+      replace: '0.0.0.0'
+
+  - name: restart mongod
+    service:
+      name: mongod
+      state: restarted
 ```
+
+The same playbook, explained line by line:
+
+![MongoDB playbook explained line by line: the first - name is the play, each - name under tasks is task 1 to 5, and the line under it is the module](../images/14-playbook-line-by-line.svg)
 
 | Task | Module | Why this step |
 |---|---|---|
