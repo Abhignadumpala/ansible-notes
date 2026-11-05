@@ -153,6 +153,53 @@ TASK [create R53 record] ********************************
 | Who does the work? | The **module** line (`amazon.aws.ec2_instance:`), not `name` |
 | Two different `name`s | `- name:` (with a dash, task level) = description. `name:` **under a module** (one level deeper) = a real option, here the EC2 instance's Name tag in AWS |
 
+### Example: a real playbook, line by line
+
+This playbook sets up a MongoDB server (RoboShop's database). Every line has a `#` comment saying what it does. Ansible ignores everything after `#`.
+
+```yaml
+- name: configure mongodb server        # PLAY: its label, shown as PLAY [...] in the output
+  hosts: mongodb                        # run on the hosts in the "mongodb" group of the inventory
+  become: yes                           # run tasks as root (sudo), needed to install and edit system files
+  tasks:                                # the list of steps, run top to bottom
+  - name: copy mongo repo               # TASK 1: its label
+    copy:                               # module: copy a file from the control node to the server
+      src: mongo.repo                   # file next to the playbook (on the control node)
+      dest: /etc/yum.repos.d/mongo.repo # where it goes on the server, so dnf knows where to download MongoDB
+
+  - name: install mongodb server        # TASK 2
+    package:                            # module: install a package (uses dnf/yum/apt automatically)
+      name: mongodb-org                 # package name (from the repo added in task 1)
+      state: present                    # install it if missing; do nothing if already installed
+
+  - name: start and enable mongodb      # TASK 3
+    service:                            # module: manage a systemd service
+      name: mongod                      # the service name (package is mongodb-org, service is mongod)
+      state: started                    # start it now if it isn't running
+      enabled: yes                      # also start it automatically after every reboot
+
+  - name: allow remote connections      # TASK 4
+    replace:                            # module: find and replace text inside a file
+      path: /etc/mongod.conf            # MongoDB's config file
+      regexp: '127.0.0.1'               # find: listen only on localhost (no remote access)
+      replace: '0.0.0.0'                # replace with: listen on all IPs, so catalogue/user servers can connect
+
+  - name: restart mongod                # TASK 5
+    service:                            # same module as task 3
+      name: mongod
+      state: restarted                  # restart, so the new config (0.0.0.0) is loaded
+```
+
+| Task | Module | Why this step |
+|---|---|---|
+| 1. copy mongo repo | `copy` | MongoDB isn't in the default OS repos, so we add its repo first |
+| 2. install | `package` | Installs `mongodb-org` from that repo |
+| 3. start and enable | `service` | Runs now **and** after reboots |
+| 4. allow remote connections | `replace` | By default MongoDB listens only on `127.0.0.1`; other servers need `0.0.0.0` |
+| 5. restart | `service` | A config change only takes effect after a restart |
+
+> **Better way:** task 5 restarts MongoDB on **every** run, even when nothing changed. A **handler** restarts it only when task 4 actually changes the file: see [Handlers](#7-handlers).
+
 ## 5. Playbook keywords
 
 ```yaml
